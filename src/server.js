@@ -29,6 +29,9 @@ module.exports = class Server {
     this.express.get('*', (req, res) => {
       this.getHandler(req, res);
     });
+    this.express.options('*', (req, res) => {
+      this.optionsHandler(req, res);
+    });
   }
 
   reset() {
@@ -85,6 +88,13 @@ module.exports = class Server {
         this.responseHandler(err[0], err[1]);
         res.status(err[0] || 500).send(err[1] || 'unknown error');
       });
+  }
+
+  optionsHandler(req, res) {
+    res.set('Access-Control-Allow-Origin', req.get('origin'));
+    res.set('Access-Control-Allow-Credentials', true);
+
+    res.sendStatus(204);
   }
 
   respondTo(path) {
